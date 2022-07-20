@@ -1,1 +1,33 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Document</title><script src="./dist/main.js"></script></head><body></body></html>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script defer src="./main.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="searchContainer">
+            <form onSubmit="return false;">
+                <h1>Weather Search</h1>
+                <label for="search"></label>
+                <input type="text" id="search" name="search" required />
+                <button id="searchButton" type="button">Search</button>
+            </form>
+            <div class="tempDataContainer">
+                <ul class="tempData">
+                    <li id="location" ></li>
+                    <li id="condition" ></li>
+                    <li id="temperature"></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>

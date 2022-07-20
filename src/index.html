@@ -12,21 +12,26 @@
     </head>
     <body>
         <div class="searchContainer">
-            <form>
+            <form onSubmit="return false;">
                 <h1>Weather Search</h1>
                 <label for="search"></label>
-                <input type="text" id="search" name="search" required />
+                <input type="text" id="search" name="search" placeholder="Enter a City Name" required />
                 <button id="searchButton" type="button">Search</button>
             </form>
-            <div>
-                <ul>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
+            <div class="tempDataContainer">
+                <ul class="tempData">
+                    <li id="location" ></li>
+                    <li id="condition" ></li>
+                    <li id="temperature"></li>
+                    <li id="humidity"></li>
+                    <li id="maxMinTemp"></li>
                     <li></li>
                 </ul>
+                <div class="weatherIconContainer">
+                    <img id="weatherIcon" src="#" alt="weather">
+                </div>
             </div>
         </div>
+        <a href="https://www.flaticon.com/free-icons/sun" title="weather icons">icons created by iconixar - Flaticon</a>
     </body>
 </html>

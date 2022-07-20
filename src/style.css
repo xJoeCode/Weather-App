@@ -10,7 +10,8 @@ h1{
     height: 20%;
     background-color: #113E74;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     padding: 3%;
     border-radius: 50px;
     text-align: center;
@@ -26,11 +27,17 @@ body{
     place-items: center;
     height: 100vh;
     width: 100%;
-    background-color: #131313;
+    background-color: #000103;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 input[type=text]{
-    width: 100%;
+    width: 70%;
     height: 40px;
     margin-top: 20px;
     margin-bottom: 20px;
@@ -39,8 +46,55 @@ input[type=text]{
     text-align: center;
 }
 
+.tempDataContainer{
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+    opacity: 0;
+    transition:  1s ease-in-out;
+    transform: rotateX(180deg);
+    margin: 10%;
+}
+
+.tempDataContainer.expand{
+    opacity: 1;
+    background-color: #000103;
+    transform: rotateX(0deg);
+}
+
+#weatherIcon{
+    width: 150px;
+    margin: 20px;
+}
+
+.weatherIconContainer{
+    display: grid;
+    place-items: center;
+}
+
+.tempData li{
+    margin-top: 30px;
+    font-family: 'Noto Serif', serif;
+    color: rgb(216, 216, 216);
+    font-size: 1.5rem;
+}
+
 button{
  width: 180px;
  height: 30px;
  cursor: pointer;
+}
+
+a{
+    text-decoration: none;
+    color: white;
+    font-size: 0.5rem;
+    text-align: right;
+}
+
+#condition{
+    text-transform: capitalize;
+}
+
+#location{
+    font-size: 2rem;
 }
