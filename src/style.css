@@ -91,13 +91,13 @@ input[type=text]{
 #marker{
     width: 80px;
     height: 80px;
-    background-color: #000103;
     background-size: cover;
     cursor: pointer;
     margin: 10px;
     
 }
 .mapboxgl-popup-content{
+    font-size: 1rem;
     font-family: 'Noto Serif', serif;
 }
 .mapboxgl-popup-close-button{
