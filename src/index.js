@@ -20,6 +20,7 @@ const map = new mapboxgl.Map({
     center: [-74.5, 40], // starting position [lng, lat]
     zoom: 9, // starting zoom
     projection: "globe", // display the map as a 3D globe
+    
 });
 
 
@@ -27,6 +28,7 @@ const geolocate = new mapboxgl.GeolocateControl({
     positionOptions: {
     enableHighAccuracy: true
     },
+    showAccuracyCircle: false,
     trackUserLocation: false,
     showUserHeading: false
     });
@@ -34,13 +36,32 @@ map.addControl(geolocate);
 
 map.on("load", () => {
     //map.setFog({}); // Set the default atmosphere style
+    geolocate.trigger()
     console.log(geolocate)
     geolocate.on("geolocate", locateUser)
 });
 
 const locateUser = (e) =>{
-    getLOcation(e.coords.longitude, e.coords.latitude )
+    console.log(e)
+    autoLocate(e.coords.longitude, e.coords.latitude )
+    
     //getWeather (e.coords.longitude, e.coords.latitude )
+}
+
+const autoLocate = async (currentLon, currentLat) =>{
+    const mapResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${currentLat}&lon=${currentLon}&appid=646b40771116a971c76a3a8a720592c6&units=metric`,
+        { mode: "cors" }
+    );
+    const weatherData = await mapResponse.json();
+
+    let latLonData = {
+        0:currentLon,
+        1:currentLat
+    }
+    console.log(latLonData)
+    moveToLocation(latLonData, weatherData)
+    
 }
 
 const getLOcation = async (currentLon, currentLat) =>{
@@ -53,61 +74,24 @@ const getLOcation = async (currentLon, currentLat) =>{
         );
         const locationData = await response.json()
         console.log(locationData)
-        const latlonData = locationData.features[0].center
-    
+        
         const mapResponse = await fetch(
             `https://api.openweathermap.org/data/2.5/weather?lat=${locationData.features[0].center[1]}&lon=${locationData.features[0].center[0]}&appid=646b40771116a971c76a3a8a720592c6&units=metric`,
             { mode: "cors" }
         );
         const weatherData = await mapResponse.json();
-        const countryCode = weatherData.sys.country;
+        console.log(weatherData)
 
         if(locationData.features[0].length == 0){
             throw error
         }
-          
-        let lat = latlonData[1];
-        let lon = latlonData[0];
-    
-        const camera = map.getFreeCameraOptions();
-        let position = [lon, lat];
-        const altitude = 3000;
-    
-        const popup = new mapboxgl.Popup({ offset: 25 }).setText(
-            `${locationInput.value}, ${countryCode}, Temp: ${weatherData.main.temp}℃, ${weatherData.weather[0].description}, Humidity: ${weatherData.main.humidity}%, Min: ${weatherData.main.temp_min}℃, Max: ${weatherData.main.temp_max}℃`
-        );
-        const el = document.createElement("div");
-        el.id = "marker";
-        new mapboxgl.Marker(el)
-            .setLngLat(position)
-            .setPopup(popup) // sets a popup on this marker
-            .addTo(map);
-    
-        camera.position = mapboxgl.MercatorCoordinate.fromLngLat(position, altitude);
-        camera.lookAtPoint([lon, lat]);
-        map.setFreeCameraOptions(camera);
-    
-        //const images = importAll(require.context("./Assets", false, /\.png/));
-        let weatherElement = document.querySelectorAll("#marker");
-        const weatherIcon = weatherData.weather[0].icon;
-        weatherElement.forEach(element =>{
-            if (weatherIcon == "04n" || weatherIcon == "04d") {
-                element.style.backgroundImage = `url('${images["04d.png"]}')`;
-            } else if (weatherIcon == "03d" || weatherIcon == "03n") {
-                element.style.backgroundImage = `url('${images["03d.png"]}')`;
-            } else if (weatherIcon == "09d" || weatherIcon == "09n") {
-                element.style.backgroundImage = `url('${images["09d.png"]}')`;
-            } else if (weatherIcon == "11d" || weatherIcon == "11n") {
-                element.style.backgroundImage = `url('${images["11d.png"]}')`;
-            } else if (weatherIcon == "13n" || weatherIcon == "13d") {
-                element.style.backgroundImage = `url('${images["13d.png"]}')`;
-            } else if (weatherIcon == "50n" || weatherIcon == "50d") {
-                element.style.backgroundImage = `url('${images["50d.png"]}')`;
-            } else {
-                element.style.backgroundImage = `url('${images[`${weatherIcon}.png`]}')`;
-                //weatherElement.src = images[`${weatherIcon}.png`];
-            }
-        })
+
+        const latlonData = locationData.features[0].center
+        const locationName = locationData.features[0].text
+        console.log(latlonData)
+
+    moveToLocation(latlonData, weatherData,locationName)
+ 
     }catch (error) {
         //throw error
         console.log(error);
@@ -121,7 +105,61 @@ const getLOcation = async (currentLon, currentLat) =>{
         }
     }
 }
-//getLOcation()
+const moveToLocation = (latlonData, weatherData,locationName) =>{
+    const countryCode = weatherData.sys.country;
+
+      
+    
+
+    let lat = latlonData[1];
+    let lon = latlonData[0];
+
+    if (locationName == undefined){
+        locationName = "Current Location"
+    }
+
+
+    const camera = map.getFreeCameraOptions();
+    let position = [lon, lat];
+    const altitude = 3000;
+  
+
+    const popup = new mapboxgl.Popup({ offset: 50 }).setText(
+        `${locationName}, Temp: ${weatherData.main.temp}℃, ${weatherData.weather[0].description}, Humidity: ${weatherData.main.humidity}%, Min: ${weatherData.main.temp_min}℃, Max: ${weatherData.main.temp_max}℃`
+    );
+    const el = document.createElement("div");
+    el.id = "marker";
+    new mapboxgl.Marker(el)
+        .setLngLat(position)
+        .setPopup(popup) // sets a popup on this marker
+        .addTo(map);
+
+    camera.position = mapboxgl.MercatorCoordinate.fromLngLat(position, altitude);
+    camera.lookAtPoint([lon, lat]);
+    map.setFreeCameraOptions(camera);
+
+    //const images = importAll(require.context("./Assets", false, /\.png/));
+    let weatherElement = document.querySelectorAll("#marker");
+    const weatherIcon = weatherData.weather[0].icon;
+    weatherElement.forEach(element =>{
+        if (weatherIcon == "04n" || weatherIcon == "04d") {
+            element.style.backgroundImage = `url('${images["04d.png"]}')`;
+        } else if (weatherIcon == "03d" || weatherIcon == "03n") {
+            element.style.backgroundImage = `url('${images["03d.png"]}')`;
+        } else if (weatherIcon == "09d" || weatherIcon == "09n") {
+            element.style.backgroundImage = `url('${images["09d.png"]}')`;
+        } else if (weatherIcon == "11d" || weatherIcon == "11n") {
+            element.style.backgroundImage = `url('${images["11d.png"]}')`;
+        } else if (weatherIcon == "13n" || weatherIcon == "13d") {
+            element.style.backgroundImage = `url('${images["13d.png"]}')`;
+        } else if (weatherIcon == "50n" || weatherIcon == "50d") {
+            element.style.backgroundImage = `url('${images["50d.png"]}')`;
+        } else {
+            element.style.backgroundImage = `url('${images[`${weatherIcon}.png`]}')`;
+            //weatherElement.src = images[`${weatherIcon}.png`];
+        }
+    })
+}
 
 const getWeather = async (lonData, latData) => {
     const locationInput = document.querySelector("#search");
