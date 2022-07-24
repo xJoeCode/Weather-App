@@ -89,9 +89,9 @@ input[type=text]{
 }
 
 #marker{
-    width: 80px;
-    height: 80px;
-    background-size: 90px 90px;
+    width: 50px;
+    height: 50px;
+    background-size: 70px 70px;
     background-color: rgb(34, 34, 34);
     background-repeat: no-repeat;
     background-position: center;
