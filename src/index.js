@@ -105,6 +105,9 @@ const getLOcation = async (currentLon, currentLat) =>{
         }
     }
 }
+
+//test pull request
+
 const moveToLocation = (latlonData, weatherData,locationName) =>{
     const countryCode = weatherData.sys.country;
 
